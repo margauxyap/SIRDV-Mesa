@@ -66,7 +66,3 @@ Possible extensions:
 ## References
 
 Kazil, J., Masad, D., & Crooks, A. (2020). Utilizing Python for Agent-Based modeling: the MESA Framework. In Lecture Notes in Computer Science (pp. 308–317). https://doi.org/10.1007/978-3-030-61255-9_30
-
-## Credits
-
-Model implemented by Margaux Yap
