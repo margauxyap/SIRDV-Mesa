@@ -1,11 +1,19 @@
+import mesa
+import enum
+import numpy as np
+
+####################################################
+
 class State(enum.IntEnum):  
     SUSCEPTIBLE = 0
     INFECTED = 1
     RECOVERED = 2
     DEAD = 3
     VACCINATED = 4
+
+####################################################
     
-class MyAgent(Agent):
+class MyAgent(mesa.Agent):
     """An agent in a rudimentary SIRDV model"""
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)   
