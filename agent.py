@@ -22,7 +22,7 @@ class MyAgent(mesa.Agent):
         self.infection_time = 0
         
         # Add number of days before a newly-infected person becomes infectious
-        self.latency_time = np.random.normal(5, 2)  
+        self.incubation_time = np.random.normal(5, 2)  
         
         self.shots = 0  # Keep track of the number of vaccination shots
         
@@ -63,7 +63,7 @@ class MyAgent(mesa.Agent):
         cellmates = self.model.grid.get_cell_list_contents([self.pos])     
 
         # Infected: can Die, stay Infected, or Recover
-        if self.state == State.INFECTED and self.model.schedule.time - self.infection_time > self.latency_time:     
+        if self.state == State.INFECTED and self.model.schedule.time - self.infection_time > self.incubation_time:     
             drate = self.model.death_rate
             alive = np.random.choice([0,1], p=[drate,1-drate])
             if alive == 0:
