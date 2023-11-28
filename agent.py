@@ -20,9 +20,7 @@ class MyAgent(mesa.Agent):
         super().__init__(unique_id, model)   
         self.state = State.SUSCEPTIBLE  
         self.infection_time = 0
-
-        #Add number of days before a newly-infected person becomes symptomatic
-        self.incubation_time = np.random.normal(5, 2)  
+        
         # Add number of days before a newly-infected person becomes infectious
         self.latency_time = np.random.normal(5, 2)  
         
@@ -45,13 +43,10 @@ class MyAgent(mesa.Agent):
         """
         This method simulates the contact between agents in a grid. 
         Checks the infection status of the agent and updates its state based on the following rules:
-        - If the agent is SUSCEPTIBLE: it may become INFECTED if there is an INFECTED cell-mate agent that has been exposed for longer its latency time (time to become infectious) at p(model.ptrans)
-        - If the agent is VACCINATED: it may become INFECTED if there is an INFECTED cell-mate agent that has been exposed for longer its latency time (time to become infectious), but at a reduced transmission rate (based on the number of shots the VACCINATED agent has received)
-        - If the agent is INFECTED:
-            - if they have been exposed for <= their (individual) Recovery period, they may Die at each step at p(model.death_rate).
-            - if they have been exposed for > their Individual Recovery period, they move to RECOVERED.
-        - If an agent is DEAD, it does not come into contact with other agents. 
-        - If an agent is RECOVERED, it can no longer become INFECTED, and just moves around the board. 
+        - If the agent is infected and has been exposed for longer than their exposed time, they may either die or recover.
+        - If the agent is vaccinated, they may become infected if they come into contact with an infected agent.
+        - If an agent is dead, it does not come into contact with other agents.
+        - If an agent is infected and comes into contact with a susceptible agent, the susceptible agent may become infected based on the transmission rate.
 
         Note: Looks from the perspective of what may happen (or others may do) to me -- NOT what I may do to others!  (Transmission view orientation is Receive not Send)
         """
@@ -62,10 +57,13 @@ class MyAgent(mesa.Agent):
 
         #Recovered: stays Recovered (assume full immunity)
         elif self.state == State.RECOVERED:
-            return   
+            return
 
-        # Infected: can Die (only if has become symptomatic), Recover (if meets or exceeds recovery_time), or stay Infected
-        elif self.state == State.INFECTED and self.model.schedule.time - self.infection_time > self.incubation_time:     
+        #only need to examine cellmates if get this far...
+        cellmates = self.model.grid.get_cell_list_contents([self.pos])     
+
+        # Infected: can Die, stay Infected, or Recover
+        if self.state == State.INFECTED and self.model.schedule.time - self.infection_time > self.latency_time:     
             drate = self.model.death_rate
             alive = np.random.choice([0,1], p=[drate,1-drate])
             if alive == 0:
@@ -74,27 +72,22 @@ class MyAgent(mesa.Agent):
                 t = self.model.schedule.time-self.infection_time
                 if t >= self.recovery_time:          
                     self.state = State.RECOVERED
-            return
 
-        
-        #only need to examine cellmates if get this far...
-        cellmates = self.model.grid.get_cell_list_contents([self.pos])
-
-        # Vaccinated: if comes into contact with an Infected (and infectious) agent, there's still a (diminished -- assume partial immunity) chance they could become infected. Otherwise, remain Vax'd
-        if self.state == State.VACCINATED:  
+        # Vaccinated: if comes into contact with an infected agent, there's still a (diminished) chance they could become infected. (assume partial immunity) Otherwise, remain Vax'd
+        elif self.state == State.VACCINATED:  
             if len(cellmates) > 1:
                 for other in cellmates:
-                    if other.state is State.INFECTED and other.infection_time > other.latency_time and self.random.random() < self.model.ptrans * (0.5 if self.shots == 1 else 0.25 if self.shots >= 2 else 1):
+                    if other.state is State.INFECTED and self.random.random() < self.model.ptrans * (0.5 if self.shots == 1 else 0.25 if self.shots >= 2 else 1):
                         self.state = State.INFECTED
                         self.infection_time = self.model.schedule.time
                         self.recovery_time = self.model.get_recovery_time()
 
-        # Susceptible: Can contract through contact with Infected (and infectious) agent in same cell; otherwise, remains Susceptible  
+        # Susceptible: Can contract through contact with Infected Agent in same cell; otherwise, remains Susceptible  
         # [note: transition to VACCINATED happens in Model.step() not Agent.step()]
         elif self.state == State.SUSCEPTIBLE:
             if len(cellmates) > 1:
                 for other in cellmates:
-                    if other.state is State.INFECTED and other.infection_time > other.latency_time and self.random.random() < self.model.ptrans:
+                    if other.state is State.INFECTED and self.random.random() < self.model.ptrans:
                         self.state = State.INFECTED
                         self.infection_time = self.model.schedule.time
                         self.recovery_time = self.model.get_recovery_time()
