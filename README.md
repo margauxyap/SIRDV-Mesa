@@ -47,11 +47,11 @@ Key parameters:
 - `width` and `height`: The size of the grid that the agents move around on. The default is 10x10.
 - `ptrans`: The probability of transmission of the infection when a susceptible and infected agent come into contact. The default value is 0.002.
 - `exposed_time`: controls the number of days that an infected agent is exposed before becoming infectious. When an agent first becomes infected, they are exposed to the disease but not yet able to transmit it to others. The exposed_time represents this incubation period.
-- `progression_period` and `progression_sd`: The mean and standard deviation of the normal distribution used to determine the progression period of the infection. In this case, the mean is 5 and the standard deviation is 2. This represents the number of steps it takes for the agent to either recover or die after becoming infected.
-- `death_rate`: The probability that an infected agent dies each step. The default is 0.00904.
+- `incubation_time`: The time between infection and symptom onset drawn from a normal distribution with mean 5 and standard deviation 2. 
+- `death_rate`: The probability that an infected agent dies each step after exceeding the incubation time. The default value is 0.00904. 
 - `recovery_days` and `recovery_sd`: The mean and standard deviation of the normal distribution used to determine the recovery time of infected agents. In this case, the mean recovery time is 14 days and the standard deviation is 7 days.
 - `vaccination_rate`: The proportion of susceptible individuals who get vaccinated each step. The default is 0.05.
-- `vaccination_delay` - Steps before vaccination starts. The default is 0
+- `vaccination_delay` - Steps before vaccination starts. The default is 0 (no delay)
 - `shots_needed` - 1 or 2 shots for immunity
 
 ## Future Work
