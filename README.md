@@ -20,7 +20,9 @@ The model allows configuring vaccination to start after a delay. Vaccination is 
 
 - `agent.py` - Defines the agent class and logic
 - `model.py` - Implements the overall SIRDV model
-- `run.py` - Example script to run a model simulation
+- `run.py` - Sample script to run a model simulation
+- `final_simulation_run.py` - Sample script for running multiple simulations
+- `example.ipynb` - Demo notebook
 
 ## Running the Model
 
@@ -28,8 +30,8 @@ To run a simulation:
 
 1. Install requirements (check requirements.txt)
 2. Modify `agent.py` and `model.py` parameters
-3. See `run.py` for running a single simulation. (Also see sample code below)
-4. Run `final_simulation_run.py` for multiple replications
+3. See `run.py` for running a single simulation (Also see sample code below).
+4. Run `final_simulation_run.py` for multiple replications (See `example.ipynb` for a demo).
 
 ```python
 model2 = GridInfectionModel(N=10000, width=10, height=10, ptrans=0.002, 
