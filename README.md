@@ -29,6 +29,7 @@ To run a simulation:
 1. Install requirements (check requirements.txt)
 2. Modify `agent.py` and `model.py` parameters
 3. Run `model.py` code. See sample code below:
+4. Run `final_simulation_run.py` for multiple replications
 
 ```python
 model2 = GridInfectionModel(N=10000, width=10, height=10, ptrans=0.002, 
