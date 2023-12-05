@@ -28,7 +28,7 @@ To run a simulation:
 
 1. Install requirements (check requirements.txt)
 2. Modify `agent.py` and `model.py` parameters
-3. Run `model.py` code. See sample code below:
+3. See `run.py` for running a single simulation. (Also see sample code below)
 4. Run `final_simulation_run.py` for multiple replications
 
 ```python
@@ -53,7 +53,7 @@ Key parameters:
 - `recovery_days` and `recovery_sd`: The mean and standard deviation of the normal distribution used to determine the recovery time of infected agents. In this case, the mean recovery time is 14 days and the standard deviation is 7 days.
 - `vaccination_rate`: The proportion of susceptible individuals who get vaccinated each step. The default is 0.05.
 - `vaccination_delay` - Steps before vaccination starts. The default is 0 (no delay)
-- `shots_needed` - 1 or 2 shots for immunity
+- `shots_needed` - required number of shots for (partial) immunity
 
 ## Future Work
 
